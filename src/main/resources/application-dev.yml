@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/audit_5
+  kafka:
+    bootstrap-servers: localhost:9092
+javers:
+  mongo:
+    enabled: true
+    database-name: audit_5
+  auditing:
+    enabled: true
