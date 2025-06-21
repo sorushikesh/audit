@@ -1,0 +1,38 @@
+# Automatically apply labels based on file path patterns in PRs
+
+backend:
+  - 'src/**/*.java'
+  - 'src/**/*.kt'
+  - 'src/**/*.go'
+
+frontend:
+  - 'web/**/*.{js,jsx,ts,tsx}'
+  - 'public/**/*'
+  - 'ui/**/*'
+
+docs:
+  - '**/*.md'
+  - 'docs/**/*'
+
+ci:
+  - '.github/workflows/**/*'
+  - '.github/actions/**/*'
+  - 'ci/**/*'
+
+tests:
+  - '**/*Test.java'
+  - '**/__tests__/**/*'
+  - '**/*.spec.js'
+  - '**/*.test.ts'
+
+infra:
+  - 'Dockerfile'
+  - 'docker/**/*'
+  - 'k8s/**/*'
+  - 'terraform/**/*'
+
+config:
+  - '**/*.yml'
+  - '**/*.yaml'
+  - '**/*.json'
+  - '**/*.properties'
