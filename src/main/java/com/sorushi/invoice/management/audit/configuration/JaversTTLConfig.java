@@ -14,4 +14,3 @@ public class JaversTTLConfig {
   @Value("${javers.ttl.snapshot-days:30}")
   private int snapshotDays;
 }
-

@@ -122,8 +122,7 @@ public class AuditServiceImpl implements AuditService {
   }
 
   @Override
-  public List<CommitMetadata> fetchAuditDataForEntity(
-      String entityType, String entityId) {
+  public List<CommitMetadata> fetchAuditDataForEntity(String entityType, String entityId) {
     return commitMetadataRepository.findCommitMetadataByEntity(entityType, entityId);
   }
 }
