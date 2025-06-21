@@ -15,3 +15,16 @@ javers:
   ttl:
     commit-metadata-days: 30
     snapshot-days: 30
+
+common:
+  mongock:
+    changeLockCollection: mongockLock
+    changeLogCollection: mongockChangeLog
+    enabled: true
+  mongobee: true
+
+mongock:
+  change-log-package: com.sorushi.invoice.management.audit.migration
+  runner-type: ApplicationRunner
+  transaction-enabled: true
+
