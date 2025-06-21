@@ -11,3 +11,6 @@ javers:
     database-name: audit
   auditing:
     enabled: true
+  ttl:
+    commit-metadata-days: 30
+    snapshot-days: 30
