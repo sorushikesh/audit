@@ -33,4 +33,20 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
       throw e;
     }
   }
+
+  @Override
+  public java.util.List<CommitMetadata> findAllCommitMetadata() {
+    return mongoTemplate.findAll(CommitMetadata.class, COLLECTION_COMMIT_METADATA_COLLECTION);
+  }
+
+  @Override
+  public java.util.List<CommitMetadata> findCommitMetadataByEntity(String entityType, String entityId) {
+    org.springframework.data.mongodb.core.query.Query query =
+        new org.springframework.data.mongodb.core.query.Query(
+            org.springframework.data.mongodb.core.query.Criteria.where("properties.type")
+                .is(entityType)
+                .and("properties.typeId")
+                .is(entityId));
+    return mongoTemplate.find(query, CommitMetadata.class, COLLECTION_COMMIT_METADATA_COLLECTION);
+  }
 }
