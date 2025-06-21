@@ -1,23 +1,21 @@
 package com.sorushi.invoice.management.audit.migration;
 
+import static com.sorushi.invoice.management.audit.constants.Constants.COLLECTION_JV_SNAPSHOT;
+import static com.sorushi.invoice.management.audit.constants.Constants.FIELD_TTL_DATE;
+
 import com.sorushi.invoice.management.audit.configuration.JaversTTLConfig;
 import io.mongock.api.annotations.ChangeUnit;
 import io.mongock.api.annotations.Execution;
 import io.mongock.api.annotations.RollbackExecution;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Component;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-
-import static com.sorushi.invoice.management.audit.constants.Constants.COLLECTION_JV_SNAPSHOT;
-import static com.sorushi.invoice.management.audit.constants.Constants.FIELD_TTL_DATE;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @ChangeUnit(id = "add-ttl-date-to-jv-snapshot", order = "002", author = "Rushikesh")
