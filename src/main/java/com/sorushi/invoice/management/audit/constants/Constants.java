@@ -4,5 +4,21 @@ public class Constants {
 
   public static final String ERRORS = "errors";
 
+  public static final String SLASH = "/";
+  public static final String DOT = ".";
+
+  public static final String DEFAULT_USER = "System user";
+
+  public static final String TYPE = "type";
+  public static final String TYPE_ID = "typeId";
+  public static final String OPERATION = "operation";
+  public static final String USER_ID = "userId";
+  public static final String CHANGED_DATE = "changedDate";
+
+  public static final String OPERATION_READ = "Read";
+  public static final String OPERATION_DELETE = "Delete";
+
+  public static final String COLLECTION_COMMIT_METADATA_COLLECTION = "commit_metadata";
+
   private Constants() {}
 }
