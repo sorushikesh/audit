@@ -14,6 +14,9 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import static com.sorushi.invoice.management.audit.constants.Constants.COLLECTION_COMMIT_METADATA_COLLECTION;
+import static com.sorushi.invoice.management.audit.constants.Constants.FIELD_TTL_DATE;
+
 @RequiredArgsConstructor
 @ChangeUnit(id = "add-ttl-date-to-commit-metadata", order = "001", author = "Rushikesh")
 @Slf4j
@@ -27,14 +30,14 @@ public class AddTTLToCommitMetadataChangeUnit {
 
     int commitMetadataDays = javersTTLConfig.getCommitMetadataDays();
     Instant ttlDate = Instant.now().plus(commitMetadataDays, ChronoUnit.DAYS);
-    Update update = new Update().set("TTL_DATE", Date.from(ttlDate));
-    mongoTemplate.updateMulti(new Query(), update, "commit_metadata");
+    Update update = new Update().set(FIELD_TTL_DATE, Date.from(ttlDate));
+    mongoTemplate.updateMulti(new Query(), update, COLLECTION_COMMIT_METADATA_COLLECTION);
   }
 
   @RollbackExecution
   public void rollback() {
-    Update update = new Update().unset("TTL_DATE");
-    mongoTemplate.updateMulti(new Query(), update, "commit_metadata");
+    Update update = new Update().unset(FIELD_TTL_DATE);
+    mongoTemplate.updateMulti(new Query(), update, COLLECTION_COMMIT_METADATA_COLLECTION);
   }
 }
 

@@ -18,7 +18,9 @@ public class Constants {
   public static final String OPERATION_READ = "Read";
   public static final String OPERATION_DELETE = "Delete";
 
+  public static final String FIELD_TTL_DATE = "TTL_DATE";
   public static final String COLLECTION_COMMIT_METADATA_COLLECTION = "commit_metadata";
+  public static final String COLLECTION_JV_SNAPSHOT = "jv_snapshots";
 
   public static final String RESPONSE_RESULT_SUCCESS = "Success";
   public static final String RESPONSE_MESSAGE_SUCCESS = "Audit event logged successfully";
