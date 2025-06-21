@@ -2,14 +2,13 @@ package com.sorushi.invoice.management.audit.dto;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.data.annotation.Id;
 
 public record AuditEvent(
-    String id,
+    @Id String id,
     String entityType,
     String entityId,
-    long tenantId,
     String changedDate,
-    String uniqueIdentifier,
     String author,
     String operation,
     Map<String, Object> newVal,
