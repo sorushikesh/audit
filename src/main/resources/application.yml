@@ -11,3 +11,7 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+javers:
+  ttl:
+    commit-metadata-days: 30
+    snapshot-days: 30
