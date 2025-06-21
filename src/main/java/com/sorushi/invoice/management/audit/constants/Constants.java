@@ -18,6 +18,12 @@ public class Constants {
   public static final String OPERATION_READ = "Read";
   public static final String OPERATION_DELETE = "Delete";
 
+  public static final String FIELD_PROPERTIES = "properties";
+  public static final String FIELD_UNDERSCORE_ID = "_id";
+  public static final String FIELD_ID = "id";
+  public static final String FIELD_MAJOR_ID = "majorId";
+  public static final String FIELD_COMMIT_DATE = "commitDate";
+  public static final String FIELD_COMMIT_META_DATA = "commitMetadata";
   public static final String FIELD_TTL_DATE = "TTL_DATE";
   public static final String COLLECTION_COMMIT_METADATA_COLLECTION = "commit_metadata";
   public static final String COLLECTION_JV_SNAPSHOT = "jv_snapshots";

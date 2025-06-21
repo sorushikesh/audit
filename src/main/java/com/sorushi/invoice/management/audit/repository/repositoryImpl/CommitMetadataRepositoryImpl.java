@@ -1,8 +1,6 @@
 package com.sorushi.invoice.management.audit.repository.repositoryImpl;
 
-import static com.sorushi.invoice.management.audit.constants.Constants.COLLECTION_COMMIT_METADATA_COLLECTION;
-import static com.sorushi.invoice.management.audit.constants.Constants.COLLECTION_JV_SNAPSHOT;
-import static com.sorushi.invoice.management.audit.constants.Constants.FIELD_TTL_DATE;
+import static com.sorushi.invoice.management.audit.constants.Constants.*;
 
 import com.sorushi.invoice.management.audit.configuration.JaversTTLConfig;
 import com.sorushi.invoice.management.audit.repository.CommitMetadataRepository;
@@ -34,9 +32,10 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
   @Override
   public void saveCommitMetadata(CommitMetadata commitMetadata) {
     log.info(
-        "Saving commit metadata: {} in collection: {}",
-        commitMetadata,
-        COLLECTION_COMMIT_METADATA_COLLECTION);
+        "Attempting to save commit metadata for author: {}, commitDate: {}",
+        commitMetadata.getAuthor(),
+        commitMetadata.getCommitDate());
+
     try {
       CommitMetadata savedCommit =
           mongoTemplate.save(commitMetadata, COLLECTION_COMMIT_METADATA_COLLECTION);
@@ -45,18 +44,33 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
       Instant commitTtlDate =
           Instant.now().plus(javersTTLConfig.getCommitMetadataDays(), ChronoUnit.DAYS);
       Update commitUpdate = new Update().set(FIELD_TTL_DATE, Date.from(commitTtlDate));
-      mongoTemplate.updateMulti(
-          Query.query(Criteria.where("_id.majorId").is(savedCommit.getId().getMajorId())),
-          commitUpdate,
-          COLLECTION_COMMIT_METADATA_COLLECTION);
+
+      long updatedCommitDocs =
+          mongoTemplate
+              .updateMulti(
+                  Query.query(
+                      Criteria.where(FIELD_UNDERSCORE_ID + DOT + FIELD_MAJOR_ID)
+                          .is(savedCommit.getId().getMajorId())),
+                  commitUpdate,
+                  COLLECTION_COMMIT_METADATA_COLLECTION)
+              .getModifiedCount();
+      log.debug("Updated TTL date for {} commit metadata documents", updatedCommitDocs);
 
       Instant snapshotTtlDate =
           Instant.now().plus(javersTTLConfig.getSnapshotDays(), ChronoUnit.DAYS);
       Update snapshotUpdate = new Update().set(FIELD_TTL_DATE, Date.from(snapshotTtlDate));
-      mongoTemplate.updateMulti(
-          Query.query(Criteria.where("commitMetadata.id").is(savedCommit.getId().getMajorId())),
-          snapshotUpdate,
-          COLLECTION_JV_SNAPSHOT);
+
+      long updatedSnapshotDocs =
+          mongoTemplate
+              .updateMulti(
+                  Query.query(
+                      Criteria.where(FIELD_COMMIT_META_DATA + DOT + FIELD_ID)
+                          .is(savedCommit.getId().getMajorId())),
+                  snapshotUpdate,
+                  COLLECTION_JV_SNAPSHOT)
+              .getModifiedCount();
+      log.debug("Updated TTL date for {} snapshot documents", updatedSnapshotDocs);
+
     } catch (Exception e) {
       log.error("Failed to save commit metadata: {}", commitMetadata, e);
       throw e;
@@ -64,15 +78,129 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
   }
 
   @Override
-  public List<CommitMetadata> findAllCommitMetadata() {
-    return mongoTemplate.findAll(CommitMetadata.class, COLLECTION_COMMIT_METADATA_COLLECTION);
+  public List<CommitMetadata> findCommitMetadata(
+      Date startDate, Date endDate, int limit, int skip) {
+    log.info(
+        "Fetching commit metadata with filters - startDate: {}, endDate: {}, limit: {}, skip: {}",
+        startDate,
+        endDate,
+        limit,
+        skip);
+
+    Query query = new Query();
+    if (startDate != null || endDate != null) {
+      Criteria dateCriteria = Criteria.where(FIELD_COMMIT_DATE);
+      if (startDate != null) {
+        dateCriteria = dateCriteria.gte(startDate);
+      }
+      if (endDate != null) {
+        dateCriteria = dateCriteria.lte(endDate);
+      }
+      query.addCriteria(dateCriteria);
+    }
+
+    if (skip > 0) query.skip(skip);
+    if (limit > 0) query.limit(limit);
+
+    List<CommitMetadata> commits =
+        mongoTemplate.find(query, CommitMetadata.class, COLLECTION_COMMIT_METADATA_COLLECTION);
+    log.debug("Found {} commit metadata documents", commits.size());
+    return commits;
   }
 
   @Override
-  public List<CommitMetadata> findCommitMetadataByEntity(String entityType, String entityId) {
-    Query query =
-        new Query(
-            Criteria.where("properties.type").is(entityType).and("properties.typeId").is(entityId));
-    return mongoTemplate.find(query, CommitMetadata.class, COLLECTION_COMMIT_METADATA_COLLECTION);
+  public long countCommitMetadata(Date startDate, Date endDate) {
+    log.info(
+        "Counting commit metadata with filters - startDate: {}, endDate: {}", startDate, endDate);
+
+    Query query = new Query();
+    if (startDate != null || endDate != null) {
+      Criteria dateCriteria = Criteria.where(FIELD_COMMIT_DATE);
+      if (startDate != null) {
+        dateCriteria = dateCriteria.gte(startDate);
+      }
+      if (endDate != null) {
+        dateCriteria = dateCriteria.lte(endDate);
+      }
+      query.addCriteria(dateCriteria);
+    }
+
+    long count = mongoTemplate.count(query, COLLECTION_COMMIT_METADATA_COLLECTION);
+    log.debug("Counted {} commit metadata documents", count);
+    return count;
+  }
+
+  @Override
+  public List<CommitMetadata> findCommitMetadataByEntity(
+      String entityType, String entityId, Date startDate, Date endDate, int limit, int skip) {
+
+    log.info(
+        "Fetching commit metadata for entity [{}:{}] with date range {} - {}, limit: {}, skip: {}",
+        entityType,
+        entityId,
+        startDate,
+        endDate,
+        limit,
+        skip);
+
+    Criteria criteria =
+        Criteria.where(FIELD_PROPERTIES + DOT + TYPE)
+            .is(entityType)
+            .and(FIELD_PROPERTIES + DOT + TYPE_ID)
+            .is(entityId);
+
+    if (startDate != null || endDate != null) {
+      Criteria dateCriteria = Criteria.where(FIELD_COMMIT_DATE);
+      if (startDate != null) {
+        dateCriteria = dateCriteria.gte(startDate);
+      }
+      if (endDate != null) {
+        dateCriteria = dateCriteria.lte(endDate);
+      }
+      criteria = new Criteria().andOperator(criteria, dateCriteria);
+    }
+
+    Query query = new Query(criteria);
+    if (skip > 0) query.skip(skip);
+    if (limit > 0) query.limit(limit);
+
+    List<CommitMetadata> commits =
+        mongoTemplate.find(query, CommitMetadata.class, COLLECTION_COMMIT_METADATA_COLLECTION);
+    log.debug(
+        "Found {} commit metadata documents for [{}:{}]", commits.size(), entityType, entityId);
+    return commits;
+  }
+
+  @Override
+  public long countCommitMetadataByEntity(
+      String entityType, String entityId, Date startDate, Date endDate) {
+    log.info(
+        "Counting commit metadata for entity [{}:{}] with date range {} - {}",
+        entityType,
+        entityId,
+        startDate,
+        endDate);
+
+    Criteria criteria =
+        Criteria.where(FIELD_PROPERTIES + DOT + TYPE)
+            .is(entityType)
+            .and(FIELD_PROPERTIES + DOT + TYPE_ID)
+            .is(entityId);
+
+    if (startDate != null || endDate != null) {
+      Criteria dateCriteria = Criteria.where(FIELD_COMMIT_DATE);
+      if (startDate != null) {
+        dateCriteria = dateCriteria.gte(startDate);
+      }
+      if (endDate != null) {
+        dateCriteria = dateCriteria.lte(endDate);
+      }
+      criteria = new Criteria().andOperator(criteria, dateCriteria);
+    }
+
+    Query query = new Query(criteria);
+    long count = mongoTemplate.count(query, COLLECTION_COMMIT_METADATA_COLLECTION);
+    log.debug("Counted {} commit metadata documents for [{}:{}]", count, entityType, entityId);
+    return count;
   }
 }
