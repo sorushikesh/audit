@@ -115,4 +115,14 @@ public class AuditServiceImpl implements AuditService {
         auditEvent.entityId());
     return auditEvent;
   }
+
+  @Override
+  public java.util.List<CommitMetadata> fetchAllAuditData() {
+    return commitMetadataRepository.findAllCommitMetadata();
+  }
+
+  @Override
+  public java.util.List<CommitMetadata> fetchAuditDataForEntity(String entityType, String entityId) {
+    return commitMetadataRepository.findCommitMetadataByEntity(entityType, entityId);
+  }
 }
