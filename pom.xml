@@ -124,6 +124,11 @@
             <groupId>io.mongock</groupId>
             <artifactId>mongodb-springdata-v4-driver</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.mongock/mongock-standalone -->
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongock-standalone</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
