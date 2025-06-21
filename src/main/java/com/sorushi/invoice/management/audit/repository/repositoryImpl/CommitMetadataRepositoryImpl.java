@@ -44,8 +44,8 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
       Instant commitTtlDate =
           Instant.now().plus(javersTTLConfig.getCommitMetadataDays(), ChronoUnit.DAYS);
       Update commitUpdate = new Update().set(FIELD_TTL_DATE, Date.from(commitTtlDate));
-      mongoTemplate.updateFirst(
-          Query.query(Criteria.where("_id").is(savedCommit.getId())),
+      mongoTemplate.updateMulti(
+          Query.query(Criteria.where("_id.majorId").is(savedCommit.getId().getMajorId())),
           commitUpdate,
           COLLECTION_COMMIT_METADATA_COLLECTION);
 
@@ -53,7 +53,7 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
           Instant.now().plus(javersTTLConfig.getSnapshotDays(), ChronoUnit.DAYS);
       Update snapshotUpdate = new Update().set(FIELD_TTL_DATE, Date.from(snapshotTtlDate));
       mongoTemplate.updateMulti(
-          Query.query(Criteria.where("commitMetadata.id").is(savedCommit.getId())),
+          Query.query(Criteria.where("commitMetadata.id").is(savedCommit.getId().getMajorId())),
           snapshotUpdate,
           COLLECTION_JV_SNAPSHOT);
     } catch (Exception e) {
