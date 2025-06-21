@@ -98,6 +98,17 @@
             <artifactId>guava</artifactId>
             <version>33.4.8-jre</version>
         </dependency>
+        <!-- Mongock for database migrations -->
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongodb-springdata-v4-driver</artifactId>
+            <version>5.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.mongock</groupId>
+            <artifactId>mongock-springboot</artifactId>
+            <version>5.3.6</version>
+        </dependency>
     </dependencies>
 
     <build>
