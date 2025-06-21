@@ -41,7 +41,7 @@ public class AuditServiceImpl implements AuditService {
   }
 
   @Override
-  public void processAuditEvent(AuditEvent auditEvent)
+  public AuditEvent processAuditEvent(AuditEvent auditEvent)
       throws JsonProcessingException, AuditServiceException {
 
     log.info("Validating audit event at: {}", auditEvent.changedDate());
@@ -113,5 +113,6 @@ public class AuditServiceImpl implements AuditService {
         "Audit committed successfully for entityType='{}', entityId='{}'",
         auditEvent.entityType(),
         auditEvent.entityId());
+    return auditEvent;
   }
 }

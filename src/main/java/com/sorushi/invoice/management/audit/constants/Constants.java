@@ -20,5 +20,8 @@ public class Constants {
 
   public static final String COLLECTION_COMMIT_METADATA_COLLECTION = "commit_metadata";
 
+  public static final String RESPONSE_RESULT_SUCCESS = "Success";
+  public static final String RESPONSE_MESSAGE_SUCCESS = "Audit event logged successfully";
+
   private Constants() {}
 }

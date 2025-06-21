@@ -5,5 +5,5 @@ import com.sorushi.invoice.management.audit.dto.AuditEvent;
 
 public interface AuditService {
 
-  void processAuditEvent(AuditEvent auditEvent) throws JsonProcessingException;
+  AuditEvent processAuditEvent(AuditEvent auditEvent) throws JsonProcessingException;
 }

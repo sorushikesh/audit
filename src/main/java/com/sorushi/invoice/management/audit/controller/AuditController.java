@@ -1,12 +1,16 @@
 package com.sorushi.invoice.management.audit.controller;
 
 import static com.sorushi.invoice.management.audit.constants.APIEndpoints.*;
+import static com.sorushi.invoice.management.audit.constants.Constants.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sorushi.invoice.management.audit.dto.AuditEvent;
+import com.sorushi.invoice.management.audit.dto.AuditEventLoggedResponse;
 import com.sorushi.invoice.management.audit.exception.AuditServiceException;
 import com.sorushi.invoice.management.audit.service.serviceImpl.AuditServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @SuppressWarnings("unused")
@@ -22,10 +26,20 @@ public class AuditController {
   }
 
   @PostMapping(LOG_DATA)
-  public void logAuditEvent(@RequestBody AuditEvent auditEvent)
+  public ResponseEntity<AuditEventLoggedResponse> logAuditEvent(@RequestBody AuditEvent auditEvent)
       throws JsonProcessingException, AuditServiceException {
 
     log.info("Processing audit event from {}", auditEvent.author());
-    auditService.processAuditEvent(auditEvent);
+    auditEvent = auditService.processAuditEvent(auditEvent);
+
+    AuditEventLoggedResponse auditEventLoggedResponse =
+        AuditEventLoggedResponse.builder()
+            .result(RESPONSE_RESULT_SUCCESS)
+            .message(RESPONSE_MESSAGE_SUCCESS)
+            .author(auditEvent.author())
+            .operation(auditEvent.operation())
+            .build();
+
+    return ResponseEntity.status(HttpStatus.OK).body(auditEventLoggedResponse);
   }
 }
