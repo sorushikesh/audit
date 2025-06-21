@@ -8,11 +8,13 @@ import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.dto.AuditEventLoggedResponse;
 import com.sorushi.invoice.management.audit.exception.AuditServiceException;
 import com.sorushi.invoice.management.audit.service.serviceImpl.AuditServiceImpl;
-import org.javers.core.commit.CommitMetadata;
 import lombok.extern.slf4j.Slf4j;
+import org.javers.core.commit.CommitMetadata;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @SuppressWarnings("unused")
 @Slf4j
@@ -45,12 +47,12 @@ public class AuditController {
   }
 
   @GetMapping(FETCH_AUDIT_DATA)
-  public ResponseEntity<java.util.List<CommitMetadata>> fetchAuditData() {
+  public ResponseEntity<List<CommitMetadata>> fetchAuditData() {
     return ResponseEntity.ok(auditService.fetchAllAuditData());
   }
 
   @GetMapping(FETCH_AUDIT_DATA_BY_ENTITY)
-  public ResponseEntity<java.util.List<CommitMetadata>> fetchAuditDataByEntity(
+  public ResponseEntity<List<CommitMetadata>> fetchAuditDataByEntity(
       @PathVariable String entityType, @PathVariable String entityId) {
     return ResponseEntity.ok(auditService.fetchAuditDataForEntity(entityType, entityId));
   }

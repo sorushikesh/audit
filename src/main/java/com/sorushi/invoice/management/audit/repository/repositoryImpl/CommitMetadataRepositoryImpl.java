@@ -6,6 +6,8 @@ import com.sorushi.invoice.management.audit.repository.CommitMetadataRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.javers.core.commit.CommitMetadata;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 @Slf4j
@@ -40,10 +42,10 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
   }
 
   @Override
-  public java.util.List<CommitMetadata> findCommitMetadataByEntity(String entityType, String entityId) {
-    org.springframework.data.mongodb.core.query.Query query =
-        new org.springframework.data.mongodb.core.query.Query(
-            org.springframework.data.mongodb.core.query.Criteria.where("properties.type")
+  public java.util.List<CommitMetadata> findCommitMetadataByEntity(
+      String entityType, String entityId) {
+    Query query =
+        new Query(Criteria.where("properties.type")
                 .is(entityType)
                 .and("properties.typeId")
                 .is(entityId));
