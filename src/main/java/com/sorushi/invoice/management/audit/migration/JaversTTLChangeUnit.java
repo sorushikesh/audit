@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-@ChangeUnit(id = "javers-ttl-indexes", order = "002", author = "Rushikesh")
+@ChangeUnit(id = "001", order = "001", author = "Rushikesh")
 @RequiredArgsConstructor
 public class JaversTTLChangeUnit {
 
