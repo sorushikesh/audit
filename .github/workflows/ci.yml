@@ -103,6 +103,9 @@ jobs:
     name: Dependency Review for PRs
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
