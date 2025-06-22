@@ -38,7 +38,8 @@ class JaversUtilTest {
     JsonNode filtered = mapper.readTree("{\"name\":\"Joe\"}");
     ObjectNode original = mapper.createObjectNode();
     AuditEventJavers javers = new AuditEventJavers();
-    AuditEvent event = new AuditEvent("id", "type", "1", null, null, null, Map.of("name", "Joe"), List.of("name"));
+    AuditEvent event =
+        new AuditEvent("id", "type", "1", null, null, null, Map.of("name", "Joe"), List.of("name"));
     util.setPayloadInModel(event, javers, filtered, original);
     assertEquals("Joe", javers.getJsonNode().get("name").asText());
   }
@@ -50,7 +51,8 @@ class JaversUtilTest {
     JsonNode filtered = mapper.readTree("{\"name\":\"Joe\"}");
     ObjectNode original = mapper.createObjectNode();
     AuditEventJavers javers = new AuditEventJavers();
-    AuditEvent event = new AuditEvent("id", "type", "1", null, null, null, Map.of("name","Joe"), null);
+    AuditEvent event =
+        new AuditEvent("id", "type", "1", null, null, null, Map.of("name", "Joe"), null);
     util.setPayloadInModel(event, javers, filtered, original);
     assertEquals(filtered, javers.getJsonNode());
   }

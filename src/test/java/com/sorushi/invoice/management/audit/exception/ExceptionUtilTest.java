@@ -5,13 +5,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.support.StaticMessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
-import org.springframework.context.support.StaticMessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
 
 @Testcontainers
 class ExceptionUtilTest {
@@ -46,8 +46,7 @@ class ExceptionUtilTest {
         ExceptionUtil.buildProblemDetail(HttpStatus.BAD_REQUEST, null, null, messageSource);
     assertEquals("ErrorCode is null", missingCode.getDetail());
 
-    ProblemDetail nullStatus =
-        ExceptionUtil.buildProblemDetail(null, "ERR", null, messageSource);
+    ProblemDetail nullStatus = ExceptionUtil.buildProblemDetail(null, "ERR", null, messageSource);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, nullStatus.getStatus());
   }
 }
