@@ -6,17 +6,9 @@ import com.sorushi.invoice.management.audit.configuration.JaversTTLConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+import com.sorushi.invoice.management.audit.BaseContainerTest;
 
-@Testcontainers
-class AddTTLToJvSnapshotChangeUnitTest {
-
-  @Container
-  static final GenericContainer<?> CONTAINER =
-      new GenericContainer<>(DockerImageName.parse("alpine:3.19")).withCommand("sleep", "1");
+class AddTTLToJvSnapshotChangeUnitTest extends BaseContainerTest {
 
   @Test
   void executeAndRollback() {

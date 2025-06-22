@@ -8,17 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+import com.sorushi.invoice.management.audit.BaseContainerTest;
 
-@Testcontainers
-class ExceptionUtilTest {
-
-  @Container
-  static final GenericContainer<?> CONTAINER =
-      new GenericContainer<>(DockerImageName.parse("alpine:3.19")).withCommand("sleep", "1");
+class ExceptionUtilTest extends BaseContainerTest {
 
   private StaticMessageSource messageSource;
 

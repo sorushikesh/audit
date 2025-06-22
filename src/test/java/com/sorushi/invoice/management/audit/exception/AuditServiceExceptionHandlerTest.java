@@ -10,17 +10,9 @@ import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+import com.sorushi.invoice.management.audit.BaseContainerTest;
 
-@Testcontainers
-class AuditServiceExceptionHandlerTest {
-
-  @Container
-  static final GenericContainer<?> CONTAINER =
-      new GenericContainer<>(DockerImageName.parse("alpine:3.19")).withCommand("sleep", "1");
+class AuditServiceExceptionHandlerTest extends BaseContainerTest {
 
   private StaticMessageSource messageSource;
   private AuditServiceExceptionHandler handler;

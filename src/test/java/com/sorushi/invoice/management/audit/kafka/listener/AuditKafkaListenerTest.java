@@ -6,17 +6,9 @@ import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.service.AuditService;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+import com.sorushi.invoice.management.audit.BaseContainerTest;
 
-@Testcontainers
-class AuditKafkaListenerTest {
-
-  @Container
-  static final GenericContainer<?> CONTAINER =
-      new GenericContainer<>(DockerImageName.parse("alpine:3.19")).withCommand("sleep", "1");
+class AuditKafkaListenerTest extends BaseContainerTest {
 
   @Test
   void listenSuccess() throws Exception {
