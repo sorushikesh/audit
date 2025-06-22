@@ -26,7 +26,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.testcontainers.containers.KafkaContainer;
@@ -54,26 +53,29 @@ class AuditKafkaContainerTest {
     template.setDefaultTopic("audit-log");
   }
 
+  static final String TOPIC_PRODUCER = "audit-log-producer";
+  static final String TOPIC_LISTENER = "audit-log-listener";
+
   @Test
   void producerSendsAndConsumerReceives() {
     AuditEventProducer producer = new AuditEventProducer(template);
-    ReflectionTestUtils.setField(producer, "auditTopic", "audit-log");
+    ReflectionTestUtils.setField(producer, "auditTopic", TOPIC_PRODUCER);
 
     Map<String, Object> consumerProps =
-        new HashMap<>(KafkaTestUtils.consumerProps("grp1", "true", (EmbeddedKafkaBroker) KAFKA));
+        new HashMap<>(KafkaTestUtils.consumerProps(KAFKA.getBootstrapServers(), "grp1", "true"));
     consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
     consumerProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
     consumerProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, AuditEvent.class.getName());
     ConsumerFactory<String, AuditEvent> cf = new DefaultKafkaConsumerFactory<>(consumerProps);
     Consumer<String, AuditEvent> consumer = cf.createConsumer();
-    consumer.subscribe(List.of("audit-log"));
+    consumer.subscribe(List.of(TOPIC_PRODUCER));
 
     AuditEvent event = new AuditEvent("1", "t", "1", null, null, null, Map.of(), null);
     producer.sendAuditEvent(event);
 
     ConsumerRecord<String, AuditEvent> record =
-        KafkaTestUtils.getSingleRecord(consumer, "audit-log");
+        KafkaTestUtils.getSingleRecord(consumer, TOPIC_PRODUCER);
     assertEquals(event.id(), record.value().id());
     consumer.close();
   }
@@ -84,21 +86,21 @@ class AuditKafkaContainerTest {
     AuditKafkaListener listener = new AuditKafkaListener(service);
 
     AuditEventProducer producer = new AuditEventProducer(template);
-    ReflectionTestUtils.setField(producer, "auditTopic", "audit-log");
+    ReflectionTestUtils.setField(producer, "auditTopic", TOPIC_LISTENER);
     AuditEvent event = new AuditEvent("2", "t", "2", null, null, null, Map.of(), null);
     producer.sendAuditEvent(event);
 
     Map<String, Object> consumerProps =
-        new HashMap<>(KafkaTestUtils.consumerProps("grp2", "true", (EmbeddedKafkaBroker) KAFKA));
+        new HashMap<>(KafkaTestUtils.consumerProps(KAFKA.getBootstrapServers(), "grp2", "true"));
     consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
     consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
     consumerProps.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
     consumerProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, AuditEvent.class.getName());
     ConsumerFactory<String, AuditEvent> cf = new DefaultKafkaConsumerFactory<>(consumerProps);
     Consumer<String, AuditEvent> consumer = cf.createConsumer();
-    consumer.subscribe(List.of("audit-log"));
+    consumer.subscribe(List.of(TOPIC_LISTENER));
     ConsumerRecord<String, AuditEvent> record =
-        KafkaTestUtils.getSingleRecord(consumer, "audit-log");
+        KafkaTestUtils.getSingleRecord(consumer, TOPIC_LISTENER);
     listener.listen(record.value());
     verify(service).processAuditEvent(event);
     consumer.close();

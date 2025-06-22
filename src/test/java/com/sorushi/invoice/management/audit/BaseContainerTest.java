@@ -11,6 +11,5 @@ public abstract class BaseContainerTest {
 
   @Container
   protected static final GenericContainer<?> ALPINE =
-      new GenericContainer<>(DockerImageName.parse("alpine:3.19"))
-          .withCommand("sleep", "1");
+      new GenericContainer<>(DockerImageName.parse("alpine:3.19")).withCommand("sleep", "1");
 }

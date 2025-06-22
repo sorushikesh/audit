@@ -3,6 +3,7 @@ package com.sorushi.invoice.management.audit.util;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import com.sorushi.invoice.management.audit.BaseContainerTest;
 import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.exception.AuditServiceException;
 import java.time.format.DateTimeFormatter;
@@ -11,8 +12,8 @@ import java.util.Locale;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.StaticMessageSource;
-import com.sorushi.invoice.management.audit.BaseContainerTest;
 
 class AuditHelperUtilTest extends BaseContainerTest {
 
@@ -24,6 +25,7 @@ class AuditHelperUtilTest extends BaseContainerTest {
     messageSource = new StaticMessageSource();
     messageSource.addMessage("AUDIT_1001", Locale.ENGLISH, "bad date");
     messageSource.addMessage("AUDIT_1002", Locale.ENGLISH, "bad field");
+    LocaleContextHolder.setLocale(Locale.ENGLISH);
     util = new AuditHelperUtil(messageSource);
   }
 

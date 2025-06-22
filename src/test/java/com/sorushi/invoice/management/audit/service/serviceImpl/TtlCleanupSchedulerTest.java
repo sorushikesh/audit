@@ -3,10 +3,10 @@ package com.sorushi.invoice.management.audit.service.serviceImpl;
 import static org.mockito.Mockito.*;
 
 import com.mongodb.client.result.DeleteResult;
+import com.sorushi.invoice.management.audit.BaseContainerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import com.sorushi.invoice.management.audit.BaseContainerTest;
 
 class TtlCleanupSchedulerTest extends BaseContainerTest {
 

@@ -2,13 +2,13 @@ package com.sorushi.invoice.management.audit.exception;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.sorushi.invoice.management.audit.BaseContainerTest;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import com.sorushi.invoice.management.audit.BaseContainerTest;
 
 class ExceptionUtilTest extends BaseContainerTest {
 
@@ -39,6 +39,6 @@ class ExceptionUtilTest extends BaseContainerTest {
     assertEquals("ErrorCode is null", missingCode.getDetail());
 
     ProblemDetail nullStatus = ExceptionUtil.buildProblemDetail(null, "ERR", null, messageSource);
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, nullStatus.getStatus());
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), nullStatus.getStatus());
   }
 }
