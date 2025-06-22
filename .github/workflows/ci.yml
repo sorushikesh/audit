@@ -101,7 +101,6 @@ jobs:
 
   dependency-review:
     name: Dependency Review for PRs
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -117,7 +116,6 @@ jobs:
 
   dependabot:
     name: Run Dependabot
-    if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
