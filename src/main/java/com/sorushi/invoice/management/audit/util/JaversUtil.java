@@ -23,6 +23,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("unused")
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -39,9 +40,8 @@ public class JaversUtil {
   @Value("${javers.change.limit:500}")
   private int changeLimit;
 
-  public static Map<String, String> clearPropertiesMap() {
+  public static void clearPropertiesMap() {
     javersCommitPropertiesMap.clear();
-    return javersCommitPropertiesMap;
   }
 
   public static void addJaversCommitProperties(String key, String value) {

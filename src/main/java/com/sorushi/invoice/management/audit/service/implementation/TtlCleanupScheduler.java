@@ -1,4 +1,4 @@
-package com.sorushi.invoice.management.audit.service.serviceImpl;
+package com.sorushi.invoice.management.audit.service.implementation;
 
 import static com.sorushi.invoice.management.audit.constants.Constants.COLLECTION_COMMIT_METADATA_COLLECTION;
 import static com.sorushi.invoice.management.audit.constants.Constants.COLLECTION_JV_SNAPSHOT;

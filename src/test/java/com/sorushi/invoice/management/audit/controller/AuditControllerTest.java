@@ -11,7 +11,7 @@ import com.sorushi.invoice.management.audit.dto.AuditEventsQuery;
 import com.sorushi.invoice.management.audit.dto.AuditEventsResponse;
 import com.sorushi.invoice.management.audit.dto.EntityHistoryResponse;
 import com.sorushi.invoice.management.audit.kafka.producer.AuditEventProducer;
-import com.sorushi.invoice.management.audit.service.serviceImpl.AuditServiceImpl;
+import com.sorushi.invoice.management.audit.service.implementation.AuditServiceImpl;
 import java.util.Collections;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,16 +35,7 @@ class AuditControllerTest extends BaseContainerTest {
   @Test
   void logAuditEventReturnsSuccess() {
     AuditEvent event =
-        new AuditEvent(
-            "id",
-            "type",
-            "1",
-            "now",
-            "author",
-            "a@example.com",
-            "op",
-            Map.of(),
-            null);
+        new AuditEvent("id", "type", "1", "now", "author", "a@example.com", "op", Map.of(), null);
 
     ResponseEntity<AuditEventLoggedResponse> resp = controller.logAuditEvent(event);
 

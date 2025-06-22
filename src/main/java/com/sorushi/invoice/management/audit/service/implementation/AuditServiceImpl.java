@@ -1,4 +1,4 @@
-package com.sorushi.invoice.management.audit.service.serviceImpl;
+package com.sorushi.invoice.management.audit.service.implementation;
 
 import static com.sorushi.invoice.management.audit.constants.Constants.*;
 
@@ -14,7 +14,7 @@ import com.sorushi.invoice.management.audit.dto.EntityHistoryResponse;
 import com.sorushi.invoice.management.audit.exception.AuditServiceException;
 import com.sorushi.invoice.management.audit.model.AuditEventJavers;
 import com.sorushi.invoice.management.audit.model.AuditEventView;
-import com.sorushi.invoice.management.audit.repository.repositoryImpl.CommitMetadataRepositoryImpl;
+import com.sorushi.invoice.management.audit.repository.implementation.CommitMetadataRepositoryImpl;
 import com.sorushi.invoice.management.audit.service.AuditService;
 import com.sorushi.invoice.management.audit.util.AuditHelperUtil;
 import com.sorushi.invoice.management.audit.util.JaversUtil;

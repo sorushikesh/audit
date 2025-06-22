@@ -1,4 +1,4 @@
-package com.sorushi.invoice.management.audit.repository.repositoryImpl;
+package com.sorushi.invoice.management.audit.repository.implementation;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;

@@ -64,15 +64,7 @@ class AuditHelperUtilTest extends BaseContainerTest {
   void filterRequestFieldsMissing() {
     AuditEvent event =
         new AuditEvent(
-            "id",
-            "t",
-            "1",
-            "date",
-            "author",
-            "a@example.com",
-            "op",
-            Map.of(),
-            List.of("missing"));
+            "id", "t", "1", "date", "author", "a@example.com", "op", Map.of(), List.of("missing"));
     assertThrows(
         AuditServiceException.class,
         () -> util.filterRequestFields(event, new java.util.ArrayList<>()));
@@ -100,15 +92,7 @@ class AuditHelperUtilTest extends BaseContainerTest {
   void addCommitPropertiesMap() {
     AuditEvent event =
         new AuditEvent(
-            "id",
-            "Customer",
-            "123",
-            "now",
-            "auth",
-            "auth@example.com",
-            "create",
-            Map.of(),
-            null);
+            "id", "Customer", "123", "now", "auth", "auth@example.com", "create", Map.of(), null);
     Map<String, String> map = util.addCommitPropertiesMap(event);
     assertEquals("Customer", map.get("type"));
     assertEquals("123", map.get("typeId"));
