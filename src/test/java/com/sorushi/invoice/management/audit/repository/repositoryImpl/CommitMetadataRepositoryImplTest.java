@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import com.sorushi.invoice.management.audit.configuration.JaversTTLConfig;
 import java.util.Collections;
-import java.util.List;
 import org.javers.core.commit.CommitMetadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

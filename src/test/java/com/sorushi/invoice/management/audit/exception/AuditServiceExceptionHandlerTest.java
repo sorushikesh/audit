@@ -6,14 +6,14 @@ import static org.mockito.Mockito.*;
 import java.util.Locale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 import org.springframework.context.support.StaticMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 class AuditServiceExceptionHandlerTest {
@@ -34,7 +34,8 @@ class AuditServiceExceptionHandlerTest {
 
   @Test
   void handleAuditServiceException() {
-    AuditServiceException ex = new AuditServiceException(HttpStatus.BAD_REQUEST, "ERR", null, messageSource);
+    AuditServiceException ex =
+        new AuditServiceException(HttpStatus.BAD_REQUEST, "ERR", null, messageSource);
     ResponseEntity<ProblemDetail> resp = handler.handleAuditServiceException(ex);
     assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
     ProblemDetail pd = resp.getBody();

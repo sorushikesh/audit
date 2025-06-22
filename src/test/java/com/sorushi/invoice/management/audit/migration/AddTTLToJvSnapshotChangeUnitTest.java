@@ -17,6 +17,7 @@ class AddTTLToJvSnapshotChangeUnitTest {
   @Container
   static final GenericContainer<?> CONTAINER =
       new GenericContainer<>(DockerImageName.parse("alpine:3.19")).withCommand("sleep", "1");
+
   @Test
   void executeAndRollback() {
     MongoTemplate template = mock(MongoTemplate.class);
