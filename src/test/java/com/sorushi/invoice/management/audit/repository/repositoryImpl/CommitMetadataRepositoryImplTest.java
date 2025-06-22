@@ -9,7 +9,6 @@ import java.util.Collections;
 import org.javers.core.commit.CommitMetadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.MessageSource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -23,7 +22,9 @@ class CommitMetadataRepositoryImplTest extends BaseContainerTest {
   void setUp() {
     template = mock(MongoTemplate.class);
     config = mock(JaversTTLConfig.class);
-    repo = new CommitMetadataRepositoryImpl(template, config, mock(org.springframework.context.MessageSource.class));
+    repo =
+        new CommitMetadataRepositoryImpl(
+            template, config, mock(org.springframework.context.MessageSource.class));
   }
 
   @Test

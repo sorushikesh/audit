@@ -1,5 +1,6 @@
 package com.sorushi.invoice.management.audit.kafka.producer;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 import com.sorushi.invoice.management.audit.BaseContainerTest;
