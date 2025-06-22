@@ -4,13 +4,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.sorushi.invoice.management.audit.BaseContainerTest;
+import com.sorushi.invoice.management.audit.constants.Constants;
 import com.sorushi.invoice.management.audit.dto.AuditEventsQuery;
 import com.sorushi.invoice.management.audit.dto.AuditEventsResponse;
+import com.sorushi.invoice.management.audit.dto.EntityHistoryResponse;
+import com.sorushi.invoice.management.audit.model.AuditEventJavers;
 import com.sorushi.invoice.management.audit.repository.repositoryImpl.CommitMetadataRepositoryImpl;
 import com.sorushi.invoice.management.audit.util.AuditHelperUtil;
 import com.sorushi.invoice.management.audit.util.JaversUtil;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import org.javers.core.commit.CommitId;
 import org.javers.core.commit.CommitMetadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,7 +95,37 @@ class AuditServiceImplTest extends BaseContainerTest {
     AuditEventsResponse resp = service.fetchAuditDataForUser("user", query);
 
     assertEquals(1, resp.count());
-    verify(repo)
-        .findCommitMetadataByUser(eq("user"), isNull(), isNull(), eq(2), eq(0));
+    verify(repo).findCommitMetadataByUser(eq("user"), isNull(), isNull(), eq(2), eq(0));
+  }
+
+  @Test
+  void fetchEntityHistory() {
+    CommitMetadata cm1 = mock(CommitMetadata.class);
+    CommitMetadata cm2 = mock(CommitMetadata.class);
+    CommitId id1 = mock(CommitId.class);
+    CommitId id2 = mock(CommitId.class);
+    when(id1.getMajorId()).thenReturn(1L);
+    when(id2.getMajorId()).thenReturn(2L);
+    when(cm1.getId()).thenReturn(id1);
+    when(cm2.getId()).thenReturn(id2);
+    when(cm1.getCommitDate()).thenReturn(LocalDateTime.now());
+    when(cm2.getCommitDate()).thenReturn(LocalDateTime.now());
+    when(cm1.getAuthor()).thenReturn("a1");
+    when(cm2.getAuthor()).thenReturn("a2");
+    when(cm1.getProperties()).thenReturn(Map.of(Constants.OPERATION, "Create"));
+    when(cm2.getProperties()).thenReturn(Map.of(Constants.OPERATION, "Update"));
+
+    when(repo.findCommitMetadataByEntity(
+            anyString(), anyString(), any(), any(), anyInt(), anyInt()))
+        .thenReturn(List.of(cm1, cm2));
+
+    AuditEventJavers j1 = new AuditEventJavers();
+    AuditEventJavers j2 = new AuditEventJavers();
+    when(javers.getLastUpdatedVersion("type", "1", 1L, 0)).thenReturn(j1);
+    when(javers.getLastUpdatedVersion("type", "1", 2L, 0)).thenReturn(j2);
+
+    EntityHistoryResponse resp = service.fetchEntityHistory("type", "1");
+    assertEquals(2, resp.count());
+    verify(repo).findCommitMetadataByEntity(eq("type"), eq("1"), isNull(), isNull(), eq(0), eq(0));
   }
 }

@@ -7,6 +7,7 @@ public class APIEndpoints {
   public static final String FETCH_AUDIT_DATA = "/audit";
   public static final String FETCH_AUDIT_DATA_BY_ENTITY = "/audit/{entityType}/{entityId}";
   public static final String FETCH_AUDIT_DATA_BY_USER = "/audit/user/{userId}";
+  public static final String FETCH_ENTITY_HISTORY = "/audit/history/{entityType}/{entityId}";
 
   private APIEndpoints() {}
 }

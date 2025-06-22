@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.dto.AuditEventsQuery;
 import com.sorushi.invoice.management.audit.dto.AuditEventsResponse;
+import com.sorushi.invoice.management.audit.dto.EntityHistoryRecord;
+import com.sorushi.invoice.management.audit.dto.EntityHistoryResponse;
 import com.sorushi.invoice.management.audit.exception.AuditServiceException;
 import com.sorushi.invoice.management.audit.model.AuditEventJavers;
 import com.sorushi.invoice.management.audit.model.AuditEventView;
@@ -16,7 +18,6 @@ import com.sorushi.invoice.management.audit.repository.repositoryImpl.CommitMeta
 import com.sorushi.invoice.management.audit.service.AuditService;
 import com.sorushi.invoice.management.audit.util.AuditHelperUtil;
 import com.sorushi.invoice.management.audit.util.JaversUtil;
-
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -209,6 +210,40 @@ public class AuditServiceImpl implements AuditService {
         .build();
   }
 
+  @Override
+  public EntityHistoryResponse fetchEntityHistory(String entityType, String entityId) {
+    List<CommitMetadata> commits =
+        new ArrayList<>(
+            commitMetadataRepository.findCommitMetadataByEntity(
+                entityType, entityId, null, null, 0, 0));
+    commits.sort(Comparator.comparing(CommitMetadata::getCommitDate));
+
+    List<EntityHistoryRecord> history = new ArrayList<>();
+    JsonNode previous = null;
+    for (CommitMetadata cm : commits) {
+      AuditEventJavers current =
+          javersUtil.getLastUpdatedVersion(entityType, entityId, cm.getId().getMajorId(), 0);
+      JsonNode currentNode = current != null ? current.getJsonNode() : null;
+      Map<String, String> props = cm.getProperties();
+      history.add(
+          EntityHistoryRecord.builder()
+              .author(cm.getAuthor())
+              .operation(props != null ? props.get(OPERATION) : null)
+              .changedDate(props != null ? props.get(CHANGED_DATE) : null)
+              .commitDate(cm.getCommitDate())
+              .oldValue(previous)
+              .newValue(currentNode)
+              .build());
+      previous = currentNode;
+    }
+
+    return EntityHistoryResponse.builder()
+        .result(RESPONSE_RESULT_SUCCESS)
+        .count((long) history.size())
+        .records(history)
+        .build();
+  }
+
   private Date parseDate(String dateStr) {
     if (dateStr == null || dateStr.isBlank()) {
       return null;
@@ -229,9 +264,7 @@ public class AuditServiceImpl implements AuditService {
     } catch (Exception e1) {
       try {
         Date parsedDate =
-            Date.from(
-                OffsetDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME)
-                    .toInstant());
+            Date.from(OffsetDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME).toInstant());
         log.info("Parsed date with offset: {}", parsedDate);
         return parsedDate;
       } catch (Exception e2) {
