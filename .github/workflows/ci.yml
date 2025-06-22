@@ -113,15 +113,3 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           comment-summary-in-pr: always
-
-  dependabot:
-    name: Run Dependabot
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Execute Dependabot Updates
-        uses: ahmadnassri/action-dependabot@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
