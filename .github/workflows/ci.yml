@@ -10,6 +10,7 @@ on:
   schedule:
     - cron: '30 14 * * *'
     - cron: '32 16 * * *'
+    - cron: '30 0 * * *'
 
 jobs:
   build:
@@ -115,3 +116,16 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           comment-summary-in-pr: always
+
+  dependabot:
+    name: Run Dependabot
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Execute Dependabot Updates
+        uses: ahmadnassri/action-dependabot@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
