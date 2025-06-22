@@ -1,4 +1,4 @@
-package com.sorushi.invoice.management.audit.service.serviceImpl;
+package com.sorushi.invoice.management.audit.service.implementation;
 
 import static org.mockito.Mockito.*;
 

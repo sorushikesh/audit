@@ -72,8 +72,7 @@ class AuditKafkaContainerTest {
     Consumer<String, AuditEvent> consumer = cf.createConsumer();
     consumer.subscribe(List.of(TOPIC_PRODUCER));
 
-    AuditEvent event =
-        new AuditEvent("1", "t", "1", null, null, null, null, Map.of(), null);
+    AuditEvent event = new AuditEvent("1", "t", "1", null, null, null, null, Map.of(), null);
     producer.sendAuditEvent(event);
 
     ConsumerRecord<String, AuditEvent> record =
@@ -89,8 +88,7 @@ class AuditKafkaContainerTest {
 
     AuditEventProducer producer = new AuditEventProducer(template, mock(MessageSource.class));
     ReflectionTestUtils.setField(producer, "auditTopic", TOPIC_LISTENER);
-    AuditEvent event =
-        new AuditEvent("2", "t", "2", null, null, null, null, Map.of(), null);
+    AuditEvent event = new AuditEvent("2", "t", "2", null, null, null, null, Map.of(), null);
     producer.sendAuditEvent(event);
 
     Map<String, Object> consumerProps =

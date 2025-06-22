@@ -10,7 +10,7 @@ import com.sorushi.invoice.management.audit.dto.AuditEventsResponse;
 import com.sorushi.invoice.management.audit.dto.EntityHistoryResponse;
 import com.sorushi.invoice.management.audit.exception.AuditServiceException;
 import com.sorushi.invoice.management.audit.kafka.producer.AuditEventProducer;
-import com.sorushi.invoice.management.audit.service.serviceImpl.AuditServiceImpl;
+import com.sorushi.invoice.management.audit.service.implementation.AuditServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

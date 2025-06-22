@@ -1,4 +1,4 @@
-package com.sorushi.invoice.management.audit.service.serviceImpl;
+package com.sorushi.invoice.management.audit.service.implementation;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -9,7 +9,7 @@ import com.sorushi.invoice.management.audit.dto.AuditEventsQuery;
 import com.sorushi.invoice.management.audit.dto.AuditEventsResponse;
 import com.sorushi.invoice.management.audit.dto.EntityHistoryResponse;
 import com.sorushi.invoice.management.audit.model.AuditEventJavers;
-import com.sorushi.invoice.management.audit.repository.repositoryImpl.CommitMetadataRepositoryImpl;
+import com.sorushi.invoice.management.audit.repository.implementation.CommitMetadataRepositoryImpl;
 import com.sorushi.invoice.management.audit.util.AuditHelperUtil;
 import com.sorushi.invoice.management.audit.util.JaversUtil;
 import java.time.LocalDateTime;

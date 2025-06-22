@@ -20,8 +20,7 @@ class AuditEventProducerTest extends BaseContainerTest {
     MessageSource messageSource = mock(MessageSource.class);
     AuditEventProducer producer = new AuditEventProducer(template, messageSource);
     ReflectionTestUtils.setField(producer, "auditTopic", "audit-log");
-    AuditEvent event =
-        new AuditEvent("id", "t", "1", null, null, null, null, Map.of(), null);
+    AuditEvent event = new AuditEvent("id", "t", "1", null, null, null, null, Map.of(), null);
     producer.sendAuditEvent(event);
     verify(template).send(anyString(), eq("id"), eq(event));
   }
@@ -33,8 +32,7 @@ class AuditEventProducerTest extends BaseContainerTest {
     doThrow(new RuntimeException("fail")).when(template).send(anyString(), anyString(), any());
     AuditEventProducer producer = new AuditEventProducer(template, messageSource);
     ReflectionTestUtils.setField(producer, "auditTopic", "audit-log");
-    AuditEvent event =
-        new AuditEvent("id", "t", "1", null, null, null, null, Map.of(), null);
+    AuditEvent event = new AuditEvent("id", "t", "1", null, null, null, null, Map.of(), null);
     assertThrows(AuditServiceException.class, () -> producer.sendAuditEvent(event));
   }
 }
