@@ -9,7 +9,6 @@ import io.mongock.api.annotations.Execution;
 import io.mongock.api.annotations.RollbackExecution;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -29,7 +28,7 @@ public class AddTTLToCommitMetadataChangeUnit {
 
     int commitMetadataDays = javersTTLConfig.getCommitMetadataDays();
     Instant ttlDate = Instant.now().plus(commitMetadataDays, ChronoUnit.DAYS);
-    Update update = new Update().set(FIELD_TTL_DATE, Date.from(ttlDate));
+    Update update = new Update().set(FIELD_TTL_DATE, ttlDate.toEpochMilli());
     mongoTemplate.updateMulti(new Query(), update, COLLECTION_COMMIT_METADATA_COLLECTION);
   }
 
