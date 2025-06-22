@@ -3,32 +3,35 @@ package com.sorushi.invoice.management.audit.controller;
 import static com.sorushi.invoice.management.audit.constants.APIEndpoints.*;
 import static com.sorushi.invoice.management.audit.constants.Constants.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.dto.AuditEventLoggedResponse;
 import com.sorushi.invoice.management.audit.dto.AuditEventsQuery;
 import com.sorushi.invoice.management.audit.dto.AuditEventsResponse;
 import com.sorushi.invoice.management.audit.exception.AuditServiceException;
+import com.sorushi.invoice.management.audit.kafka.producer.AuditEventProducer;
 import com.sorushi.invoice.management.audit.service.serviceImpl.AuditServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@SuppressWarnings("unused")
 @Slf4j
 @RestController
 @RequestMapping(API_AUDIT_SERVICE)
 public class AuditController {
 
   private final AuditServiceImpl auditService;
+  private final AuditEventProducer auditEventProducer;
 
-  public AuditController(AuditServiceImpl auditService) {
+  public AuditController(AuditServiceImpl auditService, AuditEventProducer auditEventProducer) {
     this.auditService = auditService;
+    this.auditEventProducer = auditEventProducer;
   }
 
   @PostMapping(LOG_DATA)
   public ResponseEntity<AuditEventLoggedResponse> logAuditEvent(@RequestBody AuditEvent auditEvent)
-      throws JsonProcessingException, AuditServiceException {
+      throws AuditServiceException {
     log.info(
         "Received request to log audit event: author={}, operation={}, entityType={}, entityId={}",
         auditEvent.author(),
@@ -36,14 +39,13 @@ public class AuditController {
         auditEvent.entityType(),
         auditEvent.entityId());
 
-    AuditEvent processedAuditEvent = auditService.processAuditEvent(auditEvent);
-
+    auditEventProducer.sendAuditEvent(auditEvent);
     AuditEventLoggedResponse response =
         AuditEventLoggedResponse.builder()
             .result(RESPONSE_RESULT_SUCCESS)
             .message(RESPONSE_MESSAGE_SUCCESS)
-            .author(processedAuditEvent.author())
-            .operation(processedAuditEvent.operation())
+            .author(auditEvent.author())
+            .operation(auditEvent.operation())
             .build();
 
     log.info(
