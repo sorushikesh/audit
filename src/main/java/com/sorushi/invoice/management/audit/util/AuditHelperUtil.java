@@ -114,7 +114,7 @@ public class AuditHelperUtil {
     JaversUtil.addJaversCommitProperties(TYPE, auditEvent.entityType());
     JaversUtil.addJaversCommitProperties(TYPE_ID, auditEvent.entityId());
     JaversUtil.addJaversCommitProperties(OPERATION, auditEvent.operation());
-    JaversUtil.addJaversCommitProperties(USER_ID, auditEvent.author());
+    JaversUtil.addJaversCommitProperties(USER_ID, auditEvent.authorEmail());
 
     if (StringUtils.isNotEmpty(auditEvent.changedDate())) {
       JaversUtil.addJaversCommitProperties(CHANGED_DATE, auditEvent.changedDate());

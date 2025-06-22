@@ -10,6 +10,7 @@ public record AuditEvent(
     String entityId,
     String changedDate,
     String author,
+    String authorEmail,
     String operation,
     Map<String, Object> newVal,
     List<String> fieldList) {}

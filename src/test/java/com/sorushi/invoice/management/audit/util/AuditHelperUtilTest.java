@@ -45,7 +45,15 @@ class AuditHelperUtilTest extends BaseContainerTest {
   void filterRequestFields() throws Exception {
     AuditEvent event =
         new AuditEvent(
-            "id", "t", "1", "date", "author", "op", Map.of("name", "Joe"), List.of("name"));
+            "id",
+            "t",
+            "1",
+            "date",
+            "author",
+            "a@example.com",
+            "op",
+            Map.of("name", "Joe"),
+            List.of("name"));
     List<String> list = new java.util.ArrayList<>();
     util.filterRequestFields(event, list);
     assertEquals(1, list.size());
@@ -55,7 +63,16 @@ class AuditHelperUtilTest extends BaseContainerTest {
   @Test
   void filterRequestFieldsMissing() {
     AuditEvent event =
-        new AuditEvent("id", "t", "1", "date", "author", "op", Map.of(), List.of("missing"));
+        new AuditEvent(
+            "id",
+            "t",
+            "1",
+            "date",
+            "author",
+            "a@example.com",
+            "op",
+            Map.of(),
+            List.of("missing"));
     assertThrows(
         AuditServiceException.class,
         () -> util.filterRequestFields(event, new java.util.ArrayList<>()));
@@ -65,7 +82,15 @@ class AuditHelperUtilTest extends BaseContainerTest {
   void processFieldListIfPresentInRequest() throws Exception {
     AuditEvent event =
         new AuditEvent(
-            "id", "t", "1", "date", "author", "op", Map.of("name", "Joe"), List.of("name"));
+            "id",
+            "t",
+            "1",
+            "date",
+            "author",
+            "a@example.com",
+            "op",
+            Map.of("name", "Joe"),
+            List.of("name"));
     List<String> list = new java.util.ArrayList<>();
     util.filterRequestFields(event, list);
     util.processFieldListIfPresentInRequest(event, list);
@@ -74,12 +99,21 @@ class AuditHelperUtilTest extends BaseContainerTest {
   @Test
   void addCommitPropertiesMap() {
     AuditEvent event =
-        new AuditEvent("id", "Customer", "123", "now", "auth", "create", Map.of(), null);
+        new AuditEvent(
+            "id",
+            "Customer",
+            "123",
+            "now",
+            "auth",
+            "auth@example.com",
+            "create",
+            Map.of(),
+            null);
     Map<String, String> map = util.addCommitPropertiesMap(event);
     assertEquals("Customer", map.get("type"));
     assertEquals("123", map.get("typeId"));
     assertEquals("create", map.get("operation"));
-    assertEquals("auth", map.get("userId"));
+    assertEquals("auth@example.com", map.get("userId"));
     assertEquals("now", map.get("changedDate"));
   }
 }

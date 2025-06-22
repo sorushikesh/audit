@@ -73,7 +73,7 @@ public class AuditServiceImpl implements AuditService {
     log.info("Javers instance created");
 
     Map<String, Object> newVal = auditEvent.newVal();
-    String author = Optional.ofNullable(auditEvent.author()).orElse(DEFAULT_USER);
+    String author = Optional.ofNullable(auditEvent.authorEmail()).orElse(DEFAULT_USER);
     Map<String, String> commitProperties = auditHelperUtil.addCommitPropertiesMap(auditEvent);
 
     Commit commit;
