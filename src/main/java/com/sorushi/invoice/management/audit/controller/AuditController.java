@@ -101,4 +101,27 @@ public class AuditController {
     log.info("Fetched {} audit events for entity [{}:{}].", response.count(), entityType, entityId);
     return ResponseEntity.ok(response);
   }
+
+  @GetMapping(FETCH_AUDIT_DATA_BY_USER)
+  public ResponseEntity<AuditEventsResponse> fetchAuditDataByUser(
+      @PathVariable String userId,
+      @RequestParam(required = false) Integer limit,
+      @RequestParam(required = false) Integer skip,
+      @RequestParam(required = false) String startDate,
+      @RequestParam(required = false) String endDate) {
+
+    log.info(
+        "Received request to fetch audit data by user - userId: {}, limit: {}, skip: {}, startDate: {}, endDate: {}",
+        userId,
+        limit,
+        skip,
+        startDate,
+        endDate);
+
+    AuditEventsQuery query = new AuditEventsQuery(limit, skip, startDate, endDate);
+    AuditEventsResponse response = auditService.fetchAuditDataForUser(userId, query);
+
+    log.info("Fetched {} audit events for user {}.", response.count(), userId);
+    return ResponseEntity.ok(response);
+  }
 }

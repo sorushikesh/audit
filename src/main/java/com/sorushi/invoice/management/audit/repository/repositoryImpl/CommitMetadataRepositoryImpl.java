@@ -203,4 +203,66 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
     log.info("Counted {} commit metadata documents for [{}:{}]", count, entityType, entityId);
     return count;
   }
+
+  @Override
+  public List<CommitMetadata> findCommitMetadataByUser(
+      String userId, Date startDate, Date endDate, int limit, int skip) {
+
+    log.info(
+        "Fetching commit metadata for user {} with date range {} - {}, limit: {}, skip: {}",
+        userId,
+        startDate,
+        endDate,
+        limit,
+        skip);
+
+    Criteria criteria = Criteria.where(FIELD_PROPERTIES + DOT + USER_ID).is(userId);
+
+    if (startDate != null || endDate != null) {
+      Criteria dateCriteria = Criteria.where(FIELD_COMMIT_DATE);
+      if (startDate != null) {
+        dateCriteria = dateCriteria.gte(startDate);
+      }
+      if (endDate != null) {
+        dateCriteria = dateCriteria.lte(endDate);
+      }
+      criteria = new Criteria().andOperator(criteria, dateCriteria);
+    }
+
+    Query query = new Query(criteria);
+    if (skip > 0) query.skip(skip);
+    if (limit > 0) query.limit(limit);
+
+    List<CommitMetadata> commits =
+        mongoTemplate.find(query, CommitMetadata.class, COLLECTION_COMMIT_METADATA_COLLECTION);
+    log.info("Found {} commit metadata documents for user {}", commits.size(), userId);
+    return commits;
+  }
+
+  @Override
+  public long countCommitMetadataByUser(String userId, Date startDate, Date endDate) {
+    log.info(
+        "Counting commit metadata for user {} with date range {} - {}",
+        userId,
+        startDate,
+        endDate);
+
+    Criteria criteria = Criteria.where(FIELD_PROPERTIES + DOT + USER_ID).is(userId);
+
+    if (startDate != null || endDate != null) {
+      Criteria dateCriteria = Criteria.where(FIELD_COMMIT_DATE);
+      if (startDate != null) {
+        dateCriteria = dateCriteria.gte(startDate);
+      }
+      if (endDate != null) {
+        dateCriteria = dateCriteria.lte(endDate);
+      }
+      criteria = new Criteria().andOperator(criteria, dateCriteria);
+    }
+
+    Query query = new Query(criteria);
+    long count = mongoTemplate.count(query, COLLECTION_COMMIT_METADATA_COLLECTION);
+    log.info("Counted {} commit metadata documents for user {}", count, userId);
+    return count;
+  }
 }

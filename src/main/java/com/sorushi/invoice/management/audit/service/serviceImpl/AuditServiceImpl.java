@@ -16,6 +16,10 @@ import com.sorushi.invoice.management.audit.repository.repositoryImpl.CommitMeta
 import com.sorushi.invoice.management.audit.service.AuditService;
 import com.sorushi.invoice.management.audit.util.AuditHelperUtil;
 import com.sorushi.invoice.management.audit.util.JaversUtil;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
@@ -183,6 +187,28 @@ public class AuditServiceImpl implements AuditService {
         .build();
   }
 
+  @Override
+  public AuditEventsResponse fetchAuditDataForUser(String userId, AuditEventsQuery query) {
+    log.info("Fetching audit data for user '{}', query={}", userId, query);
+
+    Date startDate = parseDate(query.startDate());
+    Date endDate = parseDate(query.endDate());
+    int limit = Optional.ofNullable(query.limit()).orElse(0);
+    int skip = Optional.ofNullable(query.skip()).orElse(0);
+
+    List<CommitMetadata> records =
+        commitMetadataRepository.findCommitMetadataByUser(userId, startDate, endDate, limit, skip);
+    long count = commitMetadataRepository.countCommitMetadataByUser(userId, startDate, endDate);
+
+    log.info("Fetched {} records for user {}, total count: {}", records.size(), userId, count);
+
+    return AuditEventsResponse.builder()
+        .result(RESPONSE_RESULT_SUCCESS)
+        .count(count)
+        .records(records)
+        .build();
+  }
+
   private Date parseDate(String dateStr) {
     if (dateStr == null || dateStr.isBlank()) {
       return null;
@@ -195,14 +221,23 @@ public class AuditServiceImpl implements AuditService {
     try {
       Date parsedDate =
           Date.from(
-              java.time.LocalDateTime.parse(dateStr)
-                  .atZone(java.time.ZoneId.systemDefault())
+              LocalDateTime.parse(dateStr, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                  .atZone(ZoneId.systemDefault())
                   .toInstant());
       log.info("Parsed date: {}", parsedDate);
       return parsedDate;
-    } catch (Exception e) {
-      log.warn("Failed to parse date: {}. Returning null.", dateStr, e);
-      return null;
+    } catch (Exception e1) {
+      try {
+        Date parsedDate =
+            Date.from(
+                OffsetDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME)
+                    .toInstant());
+        log.info("Parsed date with offset: {}", parsedDate);
+        return parsedDate;
+      } catch (Exception e2) {
+        log.warn("Failed to parse date: {}. Returning null.", dateStr, e2);
+        return null;
+      }
     }
   }
 }

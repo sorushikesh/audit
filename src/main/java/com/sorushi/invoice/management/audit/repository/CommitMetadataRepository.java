@@ -16,4 +16,9 @@ public interface CommitMetadataRepository {
 
   long countCommitMetadataByEntity(
       String entityType, String entityId, Date startDate, Date endDate);
+
+  List<CommitMetadata> findCommitMetadataByUser(
+      String userId, Date startDate, Date endDate, int limit, int skip);
+
+  long countCommitMetadataByUser(String userId, Date startDate, Date endDate);
 }

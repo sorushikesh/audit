@@ -38,4 +38,18 @@ class CommitMetadataRepositoryImplTest extends BaseContainerTest {
     repo.countCommitMetadata(null, null);
     verify(template).count(any(Query.class), anyString());
   }
+
+  @Test
+  void findCommitMetadataByUser() {
+    when(template.find(any(Query.class), eq(CommitMetadata.class), anyString()))
+        .thenReturn(Collections.emptyList());
+    repo.findCommitMetadataByUser("u1", null, null, 5, 0);
+    verify(template).find(any(Query.class), eq(CommitMetadata.class), anyString());
+  }
+
+  @Test
+  void countCommitMetadataByUser() {
+    repo.countCommitMetadataByUser("u1", null, null);
+    verify(template).count(any(Query.class), anyString());
+  }
 }
