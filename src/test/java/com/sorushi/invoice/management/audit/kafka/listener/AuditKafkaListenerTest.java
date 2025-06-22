@@ -14,7 +14,8 @@ class AuditKafkaListenerTest extends BaseContainerTest {
   void listenSuccess() throws Exception {
     AuditService service = mock(AuditService.class);
     AuditKafkaListener listener = new AuditKafkaListener(service);
-    AuditEvent event = new AuditEvent("id", "t", "1", null, null, null, Map.of(), null);
+    AuditEvent event =
+        new AuditEvent("id", "t", "1", null, null, null, null, Map.of(), null);
     listener.listen(event);
     verify(service).processAuditEvent(event);
   }
@@ -24,7 +25,8 @@ class AuditKafkaListenerTest extends BaseContainerTest {
     AuditService service = mock(AuditService.class);
     doThrow(new RuntimeException("fail")).when(service).processAuditEvent(any());
     AuditKafkaListener listener = new AuditKafkaListener(service);
-    AuditEvent event = new AuditEvent("id", "t", "1", null, null, null, Map.of(), null);
+    AuditEvent event =
+        new AuditEvent("id", "t", "1", null, null, null, null, Map.of(), null);
     listener.listen(event); // should handle exception internally
   }
 }

@@ -34,7 +34,17 @@ class AuditControllerTest extends BaseContainerTest {
 
   @Test
   void logAuditEventReturnsSuccess() {
-    AuditEvent event = new AuditEvent("id", "type", "1", "now", "author", "op", Map.of(), null);
+    AuditEvent event =
+        new AuditEvent(
+            "id",
+            "type",
+            "1",
+            "now",
+            "author",
+            "a@example.com",
+            "op",
+            Map.of(),
+            null);
 
     ResponseEntity<AuditEventLoggedResponse> resp = controller.logAuditEvent(event);
 
