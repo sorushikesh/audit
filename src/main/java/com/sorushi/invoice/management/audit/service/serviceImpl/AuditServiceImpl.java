@@ -213,7 +213,9 @@ public class AuditServiceImpl implements AuditService {
   @Override
   public EntityHistoryResponse fetchEntityHistory(String entityType, String entityId) {
     List<CommitMetadata> commits =
-        commitMetadataRepository.findCommitMetadataByEntity(entityType, entityId, null, null, 0, 0);
+        new ArrayList<>(
+            commitMetadataRepository.findCommitMetadataByEntity(
+                entityType, entityId, null, null, 0, 0));
     commits.sort(Comparator.comparing(CommitMetadata::getCommitDate));
 
     List<EntityHistoryRecord> history = new ArrayList<>();
