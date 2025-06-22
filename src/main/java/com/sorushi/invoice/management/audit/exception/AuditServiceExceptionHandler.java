@@ -39,7 +39,10 @@ public class AuditServiceExceptionHandler extends ResponseEntityExceptionHandler
     ErrorDetail newError = new ErrorDetail(errorCode, errorMessage);
     List<ErrorDetail> existingErrors = new LinkedList<>();
 
-    Object errorsObj = problemDetail.getProperties().get(ERRORS);
+    Object errorsObj = null;
+    if (problemDetail.getProperties() != null) {
+      errorsObj = problemDetail.getProperties().get(ERRORS);
+    }
 
     if (errorsObj instanceof List<?> list) {
       for (Object obj : list) {

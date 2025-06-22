@@ -2,11 +2,11 @@ package com.sorushi.invoice.management.audit.migration;
 
 import static org.mockito.Mockito.*;
 
+import com.sorushi.invoice.management.audit.BaseContainerTest;
 import com.sorushi.invoice.management.audit.configuration.JaversTTLConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Update;
-import com.sorushi.invoice.management.audit.BaseContainerTest;
 
 class AddTTLToCommitMetadataChangeUnitTest extends BaseContainerTest {
 
