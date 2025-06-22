@@ -13,4 +13,6 @@ public interface AuditService {
 
   AuditEventsResponse fetchAuditDataForEntity(
       String entityType, String entityId, AuditEventsQuery query);
+
+  AuditEventsResponse fetchAuditDataForUser(String userId, AuditEventsQuery query);
 }

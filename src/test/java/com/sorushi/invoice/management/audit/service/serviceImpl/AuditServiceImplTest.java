@@ -44,6 +44,19 @@ class AuditServiceImplTest extends BaseContainerTest {
   }
 
   @Test
+  void fetchAuditDataParsesOffsetDates() {
+    AuditEventsQuery query =
+        new AuditEventsQuery(1, 0, "2024-01-01T00:00:00Z", "2024-01-02T00:00:00Z");
+    when(repo.findCommitMetadata(any(), any(), anyInt(), anyInt()))
+        .thenReturn(Collections.emptyList());
+    when(repo.countCommitMetadata(any(), any())).thenReturn(0L);
+
+    AuditEventsResponse resp = service.fetchAuditData(query);
+    assertEquals(0, resp.count());
+    verify(repo).findCommitMetadata(any(), any(), eq(1), eq(0));
+  }
+
+  @Test
   void fetchAuditDataWithBadDates() {
     AuditEventsQuery query = new AuditEventsQuery(1, 0, "bad", null);
     when(repo.findCommitMetadata(isNull(), isNull(), anyInt(), anyInt()))
@@ -64,5 +77,19 @@ class AuditServiceImplTest extends BaseContainerTest {
     assertEquals(1, resp.count());
     verify(repo)
         .findCommitMetadataByEntity(anyString(), anyString(), isNull(), isNull(), eq(5), eq(1));
+  }
+
+  @Test
+  void fetchAuditDataForUser() {
+    AuditEventsQuery query = new AuditEventsQuery(2, 0, null, null);
+    when(repo.findCommitMetadataByUser(anyString(), any(), any(), anyInt(), anyInt()))
+        .thenReturn(List.of(mock(CommitMetadata.class)));
+    when(repo.countCommitMetadataByUser(anyString(), any(), any())).thenReturn(1L);
+
+    AuditEventsResponse resp = service.fetchAuditDataForUser("user", query);
+
+    assertEquals(1, resp.count());
+    verify(repo)
+        .findCommitMetadataByUser(eq("user"), isNull(), isNull(), eq(2), eq(0));
   }
 }

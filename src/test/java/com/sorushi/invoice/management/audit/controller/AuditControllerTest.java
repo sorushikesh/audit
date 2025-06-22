@@ -82,4 +82,23 @@ class AuditControllerTest extends BaseContainerTest {
     assertEquals(response, resp.getBody());
     verify(service).fetchAuditDataForEntity(eq("type"), eq("1"), any(AuditEventsQuery.class));
   }
+
+  @Test
+  void fetchAuditDataByUserInvokesService() {
+    AuditEventsResponse response =
+        AuditEventsResponse.builder()
+            .result(Constants.RESPONSE_RESULT_SUCCESS)
+            .count(1L)
+            .records(Collections.emptyList())
+            .build();
+    when(service.fetchAuditDataForUser(eq("user"), any(AuditEventsQuery.class)))
+        .thenReturn(response);
+
+    ResponseEntity<AuditEventsResponse> resp =
+        controller.fetchAuditDataByUser("user", null, null, null, null);
+
+    assertEquals(HttpStatus.OK, resp.getStatusCode());
+    assertEquals(response, resp.getBody());
+    verify(service).fetchAuditDataForUser(eq("user"), any(AuditEventsQuery.class));
+  }
 }
