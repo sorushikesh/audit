@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.dto.AuditEventsQuery;
 import com.sorushi.invoice.management.audit.dto.AuditEventsResponse;
+import com.sorushi.invoice.management.audit.dto.EntityHistoryResponse;
 
 public interface AuditService {
 
@@ -15,4 +16,6 @@ public interface AuditService {
       String entityType, String entityId, AuditEventsQuery query);
 
   AuditEventsResponse fetchAuditDataForUser(String userId, AuditEventsQuery query);
+
+  EntityHistoryResponse fetchEntityHistory(String entityType, String entityId);
 }

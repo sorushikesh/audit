@@ -9,6 +9,7 @@ import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.dto.AuditEventLoggedResponse;
 import com.sorushi.invoice.management.audit.dto.AuditEventsQuery;
 import com.sorushi.invoice.management.audit.dto.AuditEventsResponse;
+import com.sorushi.invoice.management.audit.dto.EntityHistoryResponse;
 import com.sorushi.invoice.management.audit.kafka.producer.AuditEventProducer;
 import com.sorushi.invoice.management.audit.service.serviceImpl.AuditServiceImpl;
 import java.util.Collections;
@@ -100,5 +101,22 @@ class AuditControllerTest extends BaseContainerTest {
     assertEquals(HttpStatus.OK, resp.getStatusCode());
     assertEquals(response, resp.getBody());
     verify(service).fetchAuditDataForUser(eq("user"), any(AuditEventsQuery.class));
+  }
+
+  @Test
+  void fetchEntityHistoryInvokesService() {
+    EntityHistoryResponse resp =
+        EntityHistoryResponse.builder()
+            .result(Constants.RESPONSE_RESULT_SUCCESS)
+            .count(0L)
+            .records(Collections.emptyList())
+            .build();
+    when(service.fetchEntityHistory("type", "1")).thenReturn(resp);
+
+    ResponseEntity<EntityHistoryResponse> response = controller.fetchEntityHistory("type", "1");
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(resp, response.getBody());
+    verify(service).fetchEntityHistory("type", "1");
   }
 }

@@ -7,6 +7,7 @@ import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.dto.AuditEventLoggedResponse;
 import com.sorushi.invoice.management.audit.dto.AuditEventsQuery;
 import com.sorushi.invoice.management.audit.dto.AuditEventsResponse;
+import com.sorushi.invoice.management.audit.dto.EntityHistoryResponse;
 import com.sorushi.invoice.management.audit.exception.AuditServiceException;
 import com.sorushi.invoice.management.audit.kafka.producer.AuditEventProducer;
 import com.sorushi.invoice.management.audit.service.serviceImpl.AuditServiceImpl;
@@ -122,6 +123,16 @@ public class AuditController {
     AuditEventsResponse response = auditService.fetchAuditDataForUser(userId, query);
 
     log.info("Fetched {} audit events for user {}.", response.count(), userId);
+    return ResponseEntity.ok(response);
+  }
+
+  @GetMapping(FETCH_ENTITY_HISTORY)
+  public ResponseEntity<EntityHistoryResponse> fetchEntityHistory(
+      @PathVariable String entityType, @PathVariable String entityId) {
+    log.info(
+        "Received request to fetch history for entityType: {}, entityId: {}", entityType, entityId);
+    EntityHistoryResponse response = auditService.fetchEntityHistory(entityType, entityId);
+    log.info("Fetched {} history records for entity [{}:{}]", response.count(), entityType, entityId);
     return ResponseEntity.ok(response);
   }
 }
