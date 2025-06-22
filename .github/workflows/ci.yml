@@ -101,6 +101,7 @@ jobs:
 
   dependency-review:
     name: Dependency Review for PRs
+    if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target' || github.event_name == 'merge_group'
     runs-on: ubuntu-latest
     permissions:
       contents: read
