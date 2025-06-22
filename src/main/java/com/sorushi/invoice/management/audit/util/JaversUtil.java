@@ -71,10 +71,7 @@ public class JaversUtil {
   private void validateConfig() {
     if (databaseName == null || databaseName.isBlank()) {
       throw new AuditServiceException(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          ErrorCodes.MISSING_DATABASE_NAME,
-          null,
-          messageSource);
+          HttpStatus.INTERNAL_SERVER_ERROR, ErrorCodes.MISSING_DATABASE_NAME, null, messageSource);
     }
   }
 
