@@ -18,7 +18,6 @@ import com.sorushi.invoice.management.audit.repository.repositoryImpl.CommitMeta
 import com.sorushi.invoice.management.audit.service.AuditService;
 import com.sorushi.invoice.management.audit.util.AuditHelperUtil;
 import com.sorushi.invoice.management.audit.util.JaversUtil;
-
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
@@ -263,9 +262,7 @@ public class AuditServiceImpl implements AuditService {
     } catch (Exception e1) {
       try {
         Date parsedDate =
-            Date.from(
-                OffsetDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME)
-                    .toInstant());
+            Date.from(OffsetDateTime.parse(dateStr, DateTimeFormatter.ISO_DATE_TIME).toInstant());
         log.info("Parsed date with offset: {}", parsedDate);
         return parsedDate;
       } catch (Exception e2) {

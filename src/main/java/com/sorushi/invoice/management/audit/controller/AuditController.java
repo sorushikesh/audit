@@ -132,7 +132,8 @@ public class AuditController {
     log.info(
         "Received request to fetch history for entityType: {}, entityId: {}", entityType, entityId);
     EntityHistoryResponse response = auditService.fetchEntityHistory(entityType, entityId);
-    log.info("Fetched {} history records for entity [{}:{}]", response.count(), entityType, entityId);
+    log.info(
+        "Fetched {} history records for entity [{}:{}]", response.count(), entityType, entityId);
     return ResponseEntity.ok(response);
   }
 }

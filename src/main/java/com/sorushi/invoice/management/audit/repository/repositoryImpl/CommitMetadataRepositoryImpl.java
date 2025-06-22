@@ -242,10 +242,7 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
   @Override
   public long countCommitMetadataByUser(String userId, Date startDate, Date endDate) {
     log.info(
-        "Counting commit metadata for user {} with date range {} - {}",
-        userId,
-        startDate,
-        endDate);
+        "Counting commit metadata for user {} with date range {} - {}", userId, startDate, endDate);
 
     Criteria criteria = Criteria.where(FIELD_PROPERTIES + DOT + USER_ID).is(userId);
 
