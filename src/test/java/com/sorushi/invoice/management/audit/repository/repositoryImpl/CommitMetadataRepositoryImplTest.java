@@ -10,17 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
+import com.sorushi.invoice.management.audit.BaseContainerTest;
 
-@Testcontainers
-class CommitMetadataRepositoryImplTest {
-
-  @Container
-  static final GenericContainer<?> CONTAINER =
-      new GenericContainer<>(DockerImageName.parse("alpine:3.19")).withCommand("sleep", "1");
+class CommitMetadataRepositoryImplTest extends BaseContainerTest {
 
   private MongoTemplate template;
   private JaversTTLConfig config;
