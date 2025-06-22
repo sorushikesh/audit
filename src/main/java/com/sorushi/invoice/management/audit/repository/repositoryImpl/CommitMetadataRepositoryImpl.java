@@ -3,6 +3,8 @@ package com.sorushi.invoice.management.audit.repository.repositoryImpl;
 import static com.sorushi.invoice.management.audit.constants.Constants.*;
 
 import com.sorushi.invoice.management.audit.configuration.JaversTTLConfig;
+import com.sorushi.invoice.management.audit.exception.AuditServiceException;
+import com.sorushi.invoice.management.audit.exception.ErrorCodes;
 import com.sorushi.invoice.management.audit.repository.CommitMetadataRepository;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -10,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.javers.core.commit.CommitMetadata;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -22,11 +26,13 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
 
   private final MongoTemplate mongoTemplate;
   private final JaversTTLConfig javersTTLConfig;
+  private final MessageSource messageSource;
 
   public CommitMetadataRepositoryImpl(
-      MongoTemplate mongoTemplate, JaversTTLConfig javersTTLConfig) {
+      MongoTemplate mongoTemplate, JaversTTLConfig javersTTLConfig, MessageSource messageSource) {
     this.mongoTemplate = mongoTemplate;
     this.javersTTLConfig = javersTTLConfig;
+    this.messageSource = messageSource;
   }
 
   @Override
@@ -73,7 +79,11 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
 
     } catch (Exception e) {
       log.error("Failed to save commit metadata: {}", commitMetadata, e);
-      throw e;
+      throw new AuditServiceException(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          ErrorCodes.COMMIT_METADATA_SAVE_FAILED,
+          new Object[] {commitMetadata},
+          messageSource);
     }
   }
 
