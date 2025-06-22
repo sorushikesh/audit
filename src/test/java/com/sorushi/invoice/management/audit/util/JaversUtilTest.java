@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.client.MongoClient;
+import org.springframework.context.MessageSource;
 import com.sorushi.invoice.management.audit.BaseContainerTest;
 import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.model.AuditEventJavers;
@@ -25,7 +26,7 @@ class JaversUtilTest extends BaseContainerTest {
 
   @Test
   void setPayloadInModelWithFieldList() throws Exception {
-    JaversUtil util = new JaversUtil(mock(MongoClient.class));
+    JaversUtil util = new JaversUtil(mock(MongoClient.class), mock(MessageSource.class));
     ObjectMapper mapper = new ObjectMapper();
     JsonNode filtered = mapper.readTree("{\"name\":\"Joe\"}");
     ObjectNode original = mapper.createObjectNode();
@@ -38,7 +39,7 @@ class JaversUtilTest extends BaseContainerTest {
 
   @Test
   void setPayloadInModelWithoutFieldList() throws Exception {
-    JaversUtil util = new JaversUtil(mock(MongoClient.class));
+    JaversUtil util = new JaversUtil(mock(MongoClient.class), mock(MessageSource.class));
     ObjectMapper mapper = new ObjectMapper();
     JsonNode filtered = mapper.readTree("{\"name\":\"Joe\"}");
     ObjectNode original = mapper.createObjectNode();

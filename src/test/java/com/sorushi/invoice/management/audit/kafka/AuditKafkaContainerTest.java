@@ -8,6 +8,7 @@ import com.sorushi.invoice.management.audit.dto.AuditEvent;
 import com.sorushi.invoice.management.audit.kafka.listener.AuditKafkaListener;
 import com.sorushi.invoice.management.audit.kafka.producer.AuditEventProducer;
 import com.sorushi.invoice.management.audit.service.AuditService;
+import org.springframework.context.MessageSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ class AuditKafkaContainerTest {
 
   @Test
   void producerSendsAndConsumerReceives() {
-    AuditEventProducer producer = new AuditEventProducer(template);
+    AuditEventProducer producer = new AuditEventProducer(template, mock(MessageSource.class));
     ReflectionTestUtils.setField(producer, "auditTopic", TOPIC_PRODUCER);
 
     Map<String, Object> consumerProps =
@@ -85,7 +86,7 @@ class AuditKafkaContainerTest {
     AuditService service = mock(AuditService.class);
     AuditKafkaListener listener = new AuditKafkaListener(service);
 
-    AuditEventProducer producer = new AuditEventProducer(template);
+    AuditEventProducer producer = new AuditEventProducer(template, mock(MessageSource.class));
     ReflectionTestUtils.setField(producer, "auditTopic", TOPIC_LISTENER);
     AuditEvent event = new AuditEvent("2", "t", "2", null, null, null, Map.of(), null);
     producer.sendAuditEvent(event);

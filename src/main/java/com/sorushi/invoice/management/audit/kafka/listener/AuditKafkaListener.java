@@ -1,6 +1,7 @@
 package com.sorushi.invoice.management.audit.kafka.listener;
 
 import com.sorushi.invoice.management.audit.dto.AuditEvent;
+import com.sorushi.invoice.management.audit.exception.ErrorCodes;
 import com.sorushi.invoice.management.audit.service.AuditService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,11 @@ public class AuditKafkaListener {
       auditService.processAuditEvent(auditEvent);
       log.info("Processed audit event with ID: {}", auditEvent.entityId());
     } catch (Exception e) {
-      log.error("Failed to process audit event with ID: {}", auditEvent.entityId(), e);
+      log.error(
+          "{}: Failed to process audit event with ID: {}",
+          ErrorCodes.PROCESS_AUDIT_EVENT_FAILED,
+          auditEvent.entityId(),
+          e);
     }
   }
 }

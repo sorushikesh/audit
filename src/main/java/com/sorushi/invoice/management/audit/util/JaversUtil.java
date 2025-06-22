@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.client.MongoClient;
 import com.sorushi.invoice.management.audit.dto.AuditEvent;
+import com.sorushi.invoice.management.audit.exception.AuditServiceException;
+import com.sorushi.invoice.management.audit.exception.ErrorCodes;
 import com.sorushi.invoice.management.audit.model.AuditEventJavers;
 import jakarta.annotation.PostConstruct;
 import java.util.*;
@@ -17,6 +19,8 @@ import org.javers.repository.jql.QueryBuilder;
 import org.javers.repository.mongo.MongoRepository;
 import org.javers.shadow.Shadow;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -26,6 +30,7 @@ public class JaversUtil {
 
   @Getter private static final Map<String, String> javersCommitPropertiesMap = new HashMap<>();
   private final MongoClient mongoClient;
+  private final MessageSource messageSource;
   @Getter private Javers javers;
 
   @Value("${spring.data.mongodb.database}")
@@ -55,14 +60,21 @@ public class JaversUtil {
     } catch (Exception ex) {
       log.error(
           "Failed to initialize Javers for database '{}': {}", databaseName, ex.getMessage(), ex);
-      throw new IllegalStateException("Javers initialization failed", ex);
+      throw new AuditServiceException(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          ErrorCodes.JAVERS_INIT_FAILED,
+          new Object[] {databaseName},
+          messageSource);
     }
   }
 
   private void validateConfig() {
     if (databaseName == null || databaseName.isBlank()) {
-      throw new IllegalArgumentException(
-          "MongoDB database name (spring.data.mongodb.database) is not configured.");
+      throw new AuditServiceException(
+          HttpStatus.INTERNAL_SERVER_ERROR,
+          ErrorCodes.MISSING_DATABASE_NAME,
+          null,
+          messageSource);
     }
   }
 
