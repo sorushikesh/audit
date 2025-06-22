@@ -39,11 +39,11 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
     try {
       CommitMetadata savedCommit =
           mongoTemplate.save(commitMetadata, COLLECTION_COMMIT_METADATA_COLLECTION);
-      log.debug("Successfully saved commit metadata with ID: {}", savedCommit.getId());
+      log.info("Successfully saved commit metadata with ID: {}", savedCommit.getId());
 
       Instant commitTtlDate =
           Instant.now().plus(javersTTLConfig.getCommitMetadataDays(), ChronoUnit.DAYS);
-      Update commitUpdate = new Update().set(FIELD_TTL_DATE, Date.from(commitTtlDate));
+      Update commitUpdate = new Update().set(FIELD_TTL_DATE, commitTtlDate.toEpochMilli());
 
       long updatedCommitDocs =
           mongoTemplate
@@ -54,11 +54,11 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
                   commitUpdate,
                   COLLECTION_COMMIT_METADATA_COLLECTION)
               .getModifiedCount();
-      log.debug("Updated TTL date for {} commit metadata documents", updatedCommitDocs);
+      log.info("Updated TTL date for {} commit metadata documents", updatedCommitDocs);
 
       Instant snapshotTtlDate =
           Instant.now().plus(javersTTLConfig.getSnapshotDays(), ChronoUnit.DAYS);
-      Update snapshotUpdate = new Update().set(FIELD_TTL_DATE, Date.from(snapshotTtlDate));
+      Update snapshotUpdate = new Update().set(FIELD_TTL_DATE, snapshotTtlDate.toEpochMilli());
 
       long updatedSnapshotDocs =
           mongoTemplate
@@ -69,7 +69,7 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
                   snapshotUpdate,
                   COLLECTION_JV_SNAPSHOT)
               .getModifiedCount();
-      log.debug("Updated TTL date for {} snapshot documents", updatedSnapshotDocs);
+      log.info("Updated TTL date for {} snapshot documents", updatedSnapshotDocs);
 
     } catch (Exception e) {
       log.error("Failed to save commit metadata: {}", commitMetadata, e);
@@ -104,7 +104,7 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
 
     List<CommitMetadata> commits =
         mongoTemplate.find(query, CommitMetadata.class, COLLECTION_COMMIT_METADATA_COLLECTION);
-    log.debug("Found {} commit metadata documents", commits.size());
+    log.info("Found {} commit metadata documents", commits.size());
     return commits;
   }
 
@@ -126,7 +126,7 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
     }
 
     long count = mongoTemplate.count(query, COLLECTION_COMMIT_METADATA_COLLECTION);
-    log.debug("Counted {} commit metadata documents", count);
+    log.info("Counted {} commit metadata documents", count);
     return count;
   }
 
@@ -166,7 +166,7 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
 
     List<CommitMetadata> commits =
         mongoTemplate.find(query, CommitMetadata.class, COLLECTION_COMMIT_METADATA_COLLECTION);
-    log.debug(
+    log.info(
         "Found {} commit metadata documents for [{}:{}]", commits.size(), entityType, entityId);
     return commits;
   }
@@ -200,7 +200,7 @@ public class CommitMetadataRepositoryImpl implements CommitMetadataRepository {
 
     Query query = new Query(criteria);
     long count = mongoTemplate.count(query, COLLECTION_COMMIT_METADATA_COLLECTION);
-    log.debug("Counted {} commit metadata documents for [{}:{}]", count, entityType, entityId);
+    log.info("Counted {} commit metadata documents for [{}:{}]", count, entityType, entityId);
     return count;
   }
 }

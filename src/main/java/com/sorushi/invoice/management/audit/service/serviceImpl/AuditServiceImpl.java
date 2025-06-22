@@ -55,17 +55,17 @@ public class AuditServiceImpl implements AuditService {
     auditHelperUtil.validateDate(
         auditEvent.changedDate(),
         List.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME, DateTimeFormatter.ISO_DATE_TIME));
-    log.debug("Date validated for audit event: {}", auditEvent.changedDate());
+    log.info("Date validated for audit event: {}", auditEvent.changedDate());
 
     List<String> fieldListInRequest = new ArrayList<>();
     auditHelperUtil.filterRequestFields(auditEvent, fieldListInRequest);
-    log.debug("Fields filtered from request: {}", fieldListInRequest);
+    log.info("Fields filtered from request: {}", fieldListInRequest);
 
     auditHelperUtil.processFieldListIfPresentInRequest(auditEvent, fieldListInRequest);
-    log.debug("Fields processed and updated in request");
+    log.info("Fields processed and updated in request");
 
     Javers javers = javersUtil.getJavers();
-    log.debug("Javers instance created");
+    log.info("Javers instance created");
 
     Map<String, Object> newVal = auditEvent.newVal();
     String author = Optional.ofNullable(auditEvent.author()).orElse(DEFAULT_USER);
@@ -75,7 +75,7 @@ public class AuditServiceImpl implements AuditService {
     JsonNode newJsonNode;
 
     if (!OPERATION_READ.equalsIgnoreCase(auditEvent.operation())) {
-      log.debug("Processing non-read operation: {}", auditEvent.operation());
+      log.info("Processing non-read operation: {}", auditEvent.operation());
       newJsonNode = objectMapper.readTree(javers.getJsonConverter().toJson(newVal));
 
       AuditEventJavers previousVersion =
@@ -83,12 +83,12 @@ public class AuditServiceImpl implements AuditService {
 
       ObjectNode originalNode;
       if (previousVersion == null || previousVersion.getJsonNode() == null) {
-        log.debug("No previous version found. Creating new version.");
+        log.info("No previous version found. Creating new version.");
         previousVersion = AuditEventJavers.builder().id(auditEvent.entityId()).build();
         originalNode = objectMapper.createObjectNode();
       } else {
         originalNode = previousVersion.getJsonNode().deepCopy();
-        log.debug("Previous version loaded with existing payload");
+        log.info("Previous version loaded with existing payload");
       }
 
       previousVersion =
@@ -96,12 +96,12 @@ public class AuditServiceImpl implements AuditService {
 
       if (OPERATION_DELETE.equalsIgnoreCase(commitProperties.get(OPERATION))) {
         previousVersion.setJsonNode(null);
-        log.debug("Cleared jsonNode due to delete operation");
+        log.info("Cleared jsonNode due to delete operation");
       }
 
       commit = javers.commit(author, previousVersion, commitProperties);
     } else {
-      log.debug("Processing read operation");
+      log.info("Processing read operation");
       AuditEventView auditEventView =
           AuditEventView.builder().id(UUID.randomUUID().toString()).build();
       commit = javers.commit(author, auditEventView, commitProperties);
@@ -139,7 +139,7 @@ public class AuditServiceImpl implements AuditService {
         commitMetadataRepository.findCommitMetadata(startDate, endDate, limit, skip);
     long count = commitMetadataRepository.countCommitMetadata(startDate, endDate);
 
-    log.debug("Fetched {} records out of total {}", records.size(), count);
+    log.info("Fetched {} records out of total {}", records.size(), count);
 
     return AuditEventsResponse.builder()
         .result(RESPONSE_RESULT_SUCCESS)
@@ -169,7 +169,7 @@ public class AuditServiceImpl implements AuditService {
         commitMetadataRepository.countCommitMetadataByEntity(
             entityType, entityId, startDate, endDate);
 
-    log.debug(
+    log.info(
         "Fetched {} records for [{}:{}], total count: {}",
         records.size(),
         entityType,
@@ -188,7 +188,7 @@ public class AuditServiceImpl implements AuditService {
       return null;
     }
 
-    log.debug("Parsing date string: {}", dateStr);
+    log.info("Parsing date string: {}", dateStr);
     auditHelperUtil.validateDate(
         dateStr, List.of(DateTimeFormatter.ISO_LOCAL_DATE_TIME, DateTimeFormatter.ISO_DATE_TIME));
 
@@ -198,7 +198,7 @@ public class AuditServiceImpl implements AuditService {
               java.time.LocalDateTime.parse(dateStr)
                   .atZone(java.time.ZoneId.systemDefault())
                   .toInstant());
-      log.debug("Parsed date: {}", parsedDate);
+      log.info("Parsed date: {}", parsedDate);
       return parsedDate;
     } catch (Exception e) {
       log.warn("Failed to parse date: {}. Returning null.", dateStr, e);

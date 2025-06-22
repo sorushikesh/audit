@@ -21,7 +21,7 @@ public class AuditKafkaListener {
       auditService.processAuditEvent(auditEvent);
       log.info("Processed audit event with ID: {}", auditEvent.entityId());
     } catch (Exception e) {
-      log.error("Failed to process audit event with ID: {}",  auditEvent.entityId(), e);
+      log.error("Failed to process audit event with ID: {}", auditEvent.entityId(), e);
     }
   }
 }

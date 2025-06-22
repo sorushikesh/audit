@@ -31,3 +31,7 @@ mongock:
   runner-type: ApplicationRunner
   transaction-enabled: true
 
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
